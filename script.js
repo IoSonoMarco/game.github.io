@@ -1,6 +1,10 @@
 const canvas = document.getElementById("screen");
-canvas.width = 400;
-canvas.height = 500;
+const gameArea = document.getElementById("gameArea");
+const gameAreaWidth = gameArea.getBoundingClientRect().width;
+canvas.style.width = gameAreaWidth;
+canvas.style.height = 16/9*gameAreaWidth;
+canvas.width = gameAreaWidth;
+canvas.height = 16/9*gameAreaWidth;
 const c = canvas.getContext("2d");
 
 // CONSTANTS
@@ -181,6 +185,14 @@ class Grid {
             line.to += this.speedX;
             drawHorizontalLine(line.yIntercept, line.from, line.to, this.color);
         }
+    }
+
+    drawTiles() {
+
+    }
+
+    makeTile() {
+
     }
 
     update(dt) {

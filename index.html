@@ -15,21 +15,25 @@
         }
 
         body {
-            padding-top: 100px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+        }
+
         #screen {
-            width: 400px;
-            height: 500px;
             border: 2px solid black;
         }
 
         .btn-box {
             padding-top: 50px;
-            width: 400px;
+            width: 100%;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -53,13 +57,18 @@
 
 <body>
 
-    <canvas id="screen"></canvas>
-    <div class="btn-box">
-        <button id="btn-left" class="btn"> LEFT </button>
-        <button id="btn-right" class="btn"> RIGHT </button>
+    <div id="gameArea" class="game-area">
+
+        <canvas id="screen"></canvas>
+
+        <div class="btn-box">
+            <button id="btn-left" class="btn"> LEFT </button>
+            <button id="btn-right" class="btn"> RIGHT </button>
+        </div>
+
     </div>
 
-    <script type="text/javascript" src="./script.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 
