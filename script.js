@@ -1,5 +1,5 @@
 const canvas = document.getElementById("screen");
-canvas.width = 500;
+canvas.width = 400;
 canvas.height = 500;
 const c = canvas.getContext("2d");
 
@@ -15,25 +15,61 @@ const canvasPos = canvas.getBoundingClientRect();
 
 const controller = {
     direction: 0,
+    side: undefined
 }
 
 const canvasCenterX = canvasPos.x + centerX;
 
+const leftButton = document.getElementById("btn-left");
+const leftButtonInfo = leftButton.getBoundingClientRect()
+const detectLeftButtonClick = (x,y) => {
+    if (x >= leftButtonInfo.x &&
+        x <= leftButtonInfo.x + leftButtonInfo.width &&
+        y >= leftButtonInfo.y &&
+        y <= leftButtonInfo.y + leftButtonInfo.height) {
+            return true;
+        }
+    return false;
+}
+
+const rightButton = document.getElementById("btn-right");
+const rightButtonInfo = rightButton.getBoundingClientRect()
+const detectRightButtonClick = (x,y) => {
+    if (x >= rightButtonInfo.x &&
+        x <= rightButtonInfo.x + rightButtonInfo.width &&
+        y >= rightButtonInfo.y &&
+        y <= rightButtonInfo.y + rightButtonInfo.height) {
+            return true;
+        }
+    return false;
+}
+
 document.addEventListener("mousedown", event => {
-    const posX = event.x - canvasCenterX
-    if (posX < 0) {
+    const x = event.x;
+    const y = event.y;
+    if(detectLeftButtonClick(x,y)) {
         controller.direction = -1;
-    } else {
+        controller.side = "left";
+    } else if (detectRightButtonClick(x,y)) {
         controller.direction = 1;
+        controller.side = "right";
     }
 });
 
-document.addEventListener("mouseup", event => {
-    const posX = event.x - canvasCenterX
-    if (posX < 0) {
-        if (controller.direction == -1) controller.direction = 0;
-    } else {
-        if (controller.direction == 1) controller.direction = 0;
+document.addEventListener("mouseup", () => {
+    switch (controller.side) {
+        case "left":
+            if (controller.direction = -1) {
+                controller.direction = 0;
+            }
+            break;
+        case "right":
+            if (controller.direction = 1) {
+                controller.direction = 0;
+            }
+            break;
+        default:
+            break;
     }
 });
 
