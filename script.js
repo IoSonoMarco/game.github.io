@@ -37,6 +37,24 @@ document.addEventListener("mouseup", event => {
     }
 });
 
+document.addEventListener("touchstart", event => {
+    const posX = event.x - canvasCenterX
+    if (posX < 0) {
+        controller.direction = -1;
+    } else {
+        controller.direction = 1;
+    }
+});
+
+document.addEventListener("touchend", event => {
+    const posX = event.x - canvasCenterX
+    if (posX < 0) {
+        if (controller.direction == -1) controller.direction = 0;
+    } else {
+        if (controller.direction == 1) controller.direction = 0;
+    }
+});
+
 document.addEventListener("keydown", event => {
     switch (event.key) {
         case "ArrowLeft":
