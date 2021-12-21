@@ -19,61 +19,63 @@ const centerY = H/2;
 
 // INPUT HANDLER
 
-const controller = {
-    direction: 0,
-    side: undefined
-}
-
 const canvasCenterX = canvas.getBoundingClientRect().x + centerX;
-
-document.addEventListener("keydown", event => {
-    switch (event.key) {
-        case "ArrowLeft":
-            controller.direction = -1;
-            break;
-        case "ArrowRight":
-            controller.direction = 1;
-            break;
-        default:
-            break;
-    }
-});
-
-document.addEventListener("keyup", event => {
-    switch (event.key) {
-        case "ArrowLeft":
-            if (controller.direction == -1) controller.direction = 0;
-            break;
-        case "ArrowRight":
-            if (controller.direction == 1) controller.direction = 0;
-            break;
-        default:
-            break;
-    }
-});
 
 class GamePad {
     constructor() {
+
+        this.controller = {
+            direction: 0
+        };
+
         canvas.addEventListener("mousedown", event => {
             const posX = event.x - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
                 text2.textContent = "controller -1";
-                controller.direction = -1;
+                this.controller.direction = -1;
             } else {
                 text2.textContent = "controller 1";
-                controller.direction = 1;
+                this.controller.direction = 1;
             }
         });
+
         canvas.addEventListener("mouseup", event => {
             const posX = event.x - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
-                if (controller.direction == -1) controller.direction = 0;
+                if (this.controller.direction == -1) this.controller.direction = 0;
             } else {
-                if (controller.direction == 1) controller.direction = 0;
+                if (this.controller.direction == 1) this.controller.direction = 0;
             }
         });
+
+        document.addEventListener("keydown", event => {
+            switch (event.key) {
+                case "ArrowLeft":
+                    this.controller.direction = -1;
+                    break;
+                case "ArrowRight":
+                    this.controller.direction = 1;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        document.addEventListener("keyup", event => {
+            switch (event.key) {
+                case "ArrowLeft":
+                    if (this.controller.direction == -1) this.controller.direction = 0;
+                    break;
+                case "ArrowRight":
+                    if (this.controller.direction == 1) this.controller.direction = 0;
+                    break;
+                default:
+                    break;
+            }
+        });
+
     }
     draw() {
         c.beginPath();
@@ -123,7 +125,7 @@ const tilesPath = [
 ];
 
 class Grid {
-    constructor(nV, spacingV, spacingH, speedY, speedX, color) {
+    constructor(nV, spacingV, spacingH, speedY, speedX, color, gamePad) {
         this.speedY = speedY * H;
         this.speedX = 0;
         this.maxSpeedX = speedX * W;
@@ -135,6 +137,8 @@ class Grid {
         this.horizontalLinesInfo = {};
         this.color = color;
         this.tileStep = 0;
+
+        this.gamePad = gamePad;
     }
 
     init() {
@@ -198,7 +202,7 @@ class Grid {
                 line.yIntercept += this.speedY*dt*60;
             }
         }
-        this.speedX = this.maxSpeedX*dt*60 * -controller.direction;
+        this.speedX = this.maxSpeedX*dt*60 * -this.gamePad.controller.direction;
         if (this.horizontalLinesInfo[0].yIntercept > H) this.tileStep += 1;
     }
 }
@@ -222,11 +226,10 @@ class Player {
 }
 
 
-
-let grid = new Grid(8, 0.1, 0.1, 0.005, 0.01, "grey");
+let gamePad = new GamePad();
+let grid = new Grid(8, 0.1, 0.1, 0.005, 0.01, "grey", gamePad);
 grid.init();
 let player = new Player(grid.spaceV*0.6, grid.spaceH*0.3, "red");
-let gamePad = new GamePad();
 
 let lastTime = 0;
 const animate = (timeStamp) => {
