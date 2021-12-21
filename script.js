@@ -29,7 +29,7 @@ class GamePad {
         };
 
         canvas.addEventListener("touchstart", event => {
-            const posX = event.x - canvasCenterX
+            const posX = event.clientX - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
                 this.controller.direction = -1;
@@ -39,7 +39,7 @@ class GamePad {
         }, false);
 
         canvas.addEventListener("touchend", event => {
-            const posX = event.x - canvasCenterX
+            const posX = event.clientX - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
                 if (this.controller.direction == -1) this.controller.direction = 0;
