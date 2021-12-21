@@ -46,7 +46,7 @@ const detectRightButtonClick = (x,y) => {
     return false;
 }
 
-document.addEventListener("mousedown", event => {
+document.addEventListener("touchstart", event => {
     const x = event.x;
     const y = event.y;
     if(detectLeftButtonClick(x,y)) {
@@ -58,7 +58,7 @@ document.addEventListener("mousedown", event => {
     }
 });
 
-document.addEventListener("mouseup", () => {
+document.addEventListener("touchend", () => {
     switch (controller.side) {
         case "left":
             if (controller.direction = -1) {
@@ -214,10 +214,10 @@ class Grid {
                 // reset for infinite loop illusion
                 line.yIntercept -= this.spaceH;
             } else {
-                line.yIntercept += this.speedY/dt;
+                line.yIntercept += this.speedY*dt*60;
             }
         }
-        this.speedX = this.maxSpeedX/dt * -controller.direction;
+        this.speedX = this.maxSpeedX*dt*60 * -controller.direction;
         if (this.horizontalLinesInfo[0].yIntercept > H) this.tileStep += 1;
     }
 }
@@ -242,7 +242,7 @@ class Player {
 
 
 
-let grid = new Grid(8, 0.1, 0.1, 0.001, 0.01, "grey");
+let grid = new Grid(8, 0.1, 0.1, 0.005, 0.01, "grey");
 grid.init();
 
 let player = new Player(grid.spaceV*0.6, grid.spaceH*0.3, "red");
@@ -255,7 +255,7 @@ const animate = (timeStamp) => {
     c.clearRect(0,0,canvas.width,canvas.height);
 
     grid.draw();
-    grid.update(dt);
+    grid.update(dt/1000);
 
     player.draw();
 
