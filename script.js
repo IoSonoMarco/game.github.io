@@ -2,96 +2,23 @@ const canvas = document.getElementById("screen");
 const gameArea = document.getElementById("gameArea");
 const gameAreaWidth = gameArea.getBoundingClientRect().width;
 canvas.width = gameAreaWidth;
-canvas.height = 12/9*gameAreaWidth;
+canvas.height = 16/9*gameAreaWidth;
 const c = canvas.getContext("2d");
 
 // CONSTANTS
 const W = canvas.width;
-const H = canvas.height;
+const H = canvas.height - canvas.height*0.1;
 const centerX = W/2;
 const centerY = H/2;
 
 // INPUT HANDLER
-
-const canvasPos = canvas.getBoundingClientRect();
 
 const controller = {
     direction: 0,
     side: undefined
 }
 
-const canvasCenterX = canvasPos.x + centerX;
-
-const leftButton = document.getElementById("btn-left");
-const leftButtonInfo = leftButton.getBoundingClientRect()
-const detectLeftButtonClick = (x,y) => {
-    if (x >= leftButtonInfo.x &&
-        x <= leftButtonInfo.x + leftButtonInfo.width &&
-        y >= leftButtonInfo.y &&
-        y <= leftButtonInfo.y + leftButtonInfo.height) {
-            return true;
-        }
-    return false;
-}
-
-const rightButton = document.getElementById("btn-right");
-const rightButtonInfo = rightButton.getBoundingClientRect()
-const detectRightButtonClick = (x,y) => {
-    if (x >= rightButtonInfo.x &&
-        x <= rightButtonInfo.x + rightButtonInfo.width &&
-        y >= rightButtonInfo.y &&
-        y <= rightButtonInfo.y + rightButtonInfo.height) {
-            return true;
-        }
-    return false;
-}
-
-document.addEventListener("touchstart", event => {
-    const x = event.x;
-    const y = event.y;
-    if(detectLeftButtonClick(x,y)) {
-        controller.direction = -1;
-        controller.side = "left";
-    } else if (detectRightButtonClick(x,y)) {
-        controller.direction = 1;
-        controller.side = "right";
-    }
-});
-
-document.addEventListener("touchend", () => {
-    switch (controller.side) {
-        case "left":
-            if (controller.direction = -1) {
-                controller.direction = 0;
-            }
-            break;
-        case "right":
-            if (controller.direction = 1) {
-                controller.direction = 0;
-            }
-            break;
-        default:
-            break;
-    }
-});
-
-document.addEventListener("touchstart", event => {
-    const posX = event.x - canvasCenterX
-    if (posX < 0) {
-        controller.direction = -1;
-    } else {
-        controller.direction = 1;
-    }
-});
-
-document.addEventListener("touchend", event => {
-    const posX = event.x - canvasCenterX
-    if (posX < 0) {
-        if (controller.direction == -1) controller.direction = 0;
-    } else {
-        if (controller.direction == 1) controller.direction = 0;
-    }
-});
+const canvasCenterX = canvas.getBoundingClientRect().x + centerX;
 
 document.addEventListener("keydown", event => {
     switch (event.key) {
@@ -119,7 +46,51 @@ document.addEventListener("keyup", event => {
     }
 });
 
+class GamePad {
+    constructor() {
+        canvas.addEventListener("mousedown", event => {
+            const posX = event.x - canvasCenterX
+            if (posX < 0) {
+                controller.direction = -1;
+            } else {
+                controller.direction = 1;
+            }
+        });
+        canvas.addEventListener("mouseup", event => {
+            const posX = event.x - canvasCenterX
+            if (posX < 0) {
+                if (controller.direction == -1) controller.direction = 0;
+            } else {
+                if (controller.direction == 1) controller.direction = 0;
+            }
+        });
+    }
+    draw() {
+        c.beginPath();
+        c.rect(0, H, W, canvas.height*0.1);
+        c.fillStyle = "white";
+        c.fill();
+        c.strokeStyle = "black";
+        c.stroke();
 
+        c.beginPath();
+        c.moveTo(centerX, canvas.height);
+        c.lineTo(centerX, H);
+        c.strokeStyle = "black";
+        c.stroke();
+    }
+}
+
+// GAME
+
+
+const GameState = 1;
+
+c.beginPath();
+c.moveTo(0, H);
+c.lineTo(W, H);
+c.strokeStyle = "black";
+c.stroke();
 
 const drawVerticalLine = (xIntercept, color) => {
     c.beginPath();
@@ -138,14 +109,14 @@ const drawHorizontalLine = (yIntercept, from, to, color) => {
 }
 
 const tilesPath = [
-    [3,0], [3,1], [3,2], [3,3], [3,4], [3,5]
+    [3,0]
 ];
 
 class Grid {
     constructor(nV, spacingV, spacingH, speedY, speedX, color) {
-        this.speedY = speedY * canvas.height;
+        this.speedY = speedY * H;
         this.speedX = 0;
-        this.maxSpeedX = speedX * canvas.width;
+        this.maxSpeedX = speedX * W;
         this.nV = nV;
         this.spaceV = spacingV*W;
         this.spaceH = spacingH*H;
@@ -244,20 +215,23 @@ class Player {
 
 let grid = new Grid(8, 0.1, 0.1, 0.005, 0.01, "grey");
 grid.init();
-
 let player = new Player(grid.spaceV*0.6, grid.spaceH*0.3, "red");
+let gamePad = new GamePad();
 
 let lastTime = 0;
 const animate = (timeStamp) => {
     const dt = timeStamp - lastTime;
     lastTime = timeStamp;
 
-    c.clearRect(0,0,canvas.width,canvas.height);
+    if (GameState == 1) {
+        c.clearRect(0,0,W,H);
 
-    grid.draw();
-    grid.update(dt/1000);
+        grid.draw();
+        grid.update(dt/1000);
+        player.draw();
 
-    player.draw();
+        gamePad.draw();        
+    }
 
     requestAnimationFrame(animate);
 
