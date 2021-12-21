@@ -202,7 +202,7 @@ class Grid {
                 line.yIntercept += this.speedY*dt*60;
             }
         }
-        this.speedX = this.maxSpeedX*dt*60 * -this.gamePad.controller.direction;
+        this.speedX = this.maxSpeedX * -this.gamePad.controller.direction;
         if (this.horizontalLinesInfo[0].yIntercept > H) this.tileStep += 1;
     }
 }
