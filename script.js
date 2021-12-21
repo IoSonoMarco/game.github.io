@@ -48,7 +48,7 @@ document.addEventListener("keyup", event => {
 
 class GamePad {
     constructor() {
-        canvas.addEventListener("mousedown", event => {
+        canvas.addEventListener("touchstart", event => {
             const posX = event.x - canvasCenterX
             if (posX < 0) {
                 controller.direction = -1;
@@ -56,7 +56,7 @@ class GamePad {
                 controller.direction = 1;
             }
         });
-        canvas.addEventListener("mouseup", event => {
+        canvas.addEventListener("touchend", event => {
             const posX = event.x - canvasCenterX
             if (posX < 0) {
                 if (controller.direction == -1) controller.direction = 0;
