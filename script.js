@@ -1,10 +1,8 @@
 const canvas = document.getElementById("screen");
 const gameArea = document.getElementById("gameArea");
 const gameAreaWidth = gameArea.getBoundingClientRect().width;
-canvas.style.width = gameAreaWidth;
-canvas.style.height = 16/9*gameAreaWidth;
 canvas.width = gameAreaWidth;
-canvas.height = 16/9*gameAreaWidth;
+canvas.height = 12/9*gameAreaWidth;
 const c = canvas.getContext("2d");
 
 // CONSTANTS
@@ -139,11 +137,15 @@ const drawHorizontalLine = (yIntercept, from, to, color) => {
     c.stroke();
 }
 
+const tilesPath = [
+    [3,0], [3,1], [3,2], [3,3], [3,4], [3,5]
+];
+
 class Grid {
     constructor(nV, spacingV, spacingH, speedY, speedX, color) {
-        this.speedY = speedY;
+        this.speedY = speedY * canvas.height;
         this.speedX = 0;
-        this.maxSpeedX = speedX;
+        this.maxSpeedX = speedX * canvas.width;
         this.nV = nV;
         this.spaceV = spacingV*W;
         this.spaceH = spacingH*H;
@@ -151,6 +153,7 @@ class Grid {
         this.verticalLinesInfo = {};
         this.horizontalLinesInfo = {};
         this.color = color;
+        this.tileStep = 0;
     }
 
     init() {
@@ -185,14 +188,22 @@ class Grid {
             line.to += this.speedX;
             drawHorizontalLine(line.yIntercept, line.from, line.to, this.color);
         }
+        this.drawTiles();
     }
 
     drawTiles() {
-
+        tilesPath.forEach(coord => this.makeTile(coord[0], coord[1]));
     }
 
-    makeTile() {
-
+    makeTile(xPos, yPos) {
+        const x = this.verticalLinesInfo[xPos].xIntercept;
+        const y = this.horizontalLinesInfo[yPos].yIntercept + this.tileStep*this.spaceH;
+        c.beginPath();
+        c.rect(x, y, this.spaceV, this.spaceH)
+        c.fillStyle = "grey";
+        c.fill();
+        c.strokeStyle = "grey";
+        c.stroke();
     }
 
     update(dt) {
@@ -207,6 +218,7 @@ class Grid {
             }
         }
         this.speedX = this.maxSpeedX/dt * -controller.direction;
+        if (this.horizontalLinesInfo[0].yIntercept > H) this.tileStep += 1;
     }
 }
 
@@ -230,7 +242,7 @@ class Player {
 
 
 
-let grid = new Grid(8, 0.1, 0.1, 1, 5, "grey");
+let grid = new Grid(8, 0.1, 0.1, 0.001, 0.01, "grey");
 grid.init();
 
 let player = new Player(grid.spaceV*0.6, grid.spaceH*0.3, "red");
