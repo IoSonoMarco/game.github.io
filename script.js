@@ -5,6 +5,9 @@ canvas.width = gameAreaWidth;
 canvas.height = 16/9*gameAreaWidth;
 const c = canvas.getContext("2d");
 
+const text = document.getElementById("text");
+text.textContent = "coord";
+
 // CONSTANTS
 const W = canvas.width;
 const H = canvas.height - canvas.height*0.1;
@@ -48,16 +51,18 @@ document.addEventListener("keyup", event => {
 
 class GamePad {
     constructor() {
-        canvas.addEventListener("touchstart", event => {
+        canvas.addEventListener("mousedown", event => {
             const posX = event.x - canvasCenterX
+            text.textContent = posX.toString();
             if (posX < 0) {
                 controller.direction = -1;
             } else {
                 controller.direction = 1;
             }
         });
-        canvas.addEventListener("touchend", event => {
+        canvas.addEventListener("mouseup", event => {
             const posX = event.x - canvasCenterX
+            text.textContent = posX.toString();
             if (posX < 0) {
                 if (controller.direction == -1) controller.direction = 0;
             } else {
