@@ -28,7 +28,7 @@ class GamePad {
             direction: 0
         };
 
-        canvas.addEventListener("mousedown", event => {
+        canvas.addEventListener("touchstart", event => {
             const posX = event.x - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
@@ -36,9 +36,9 @@ class GamePad {
             } else {
                 this.controller.direction = 1;
             }
-        });
+        }, false);
 
-        canvas.addEventListener("mouseup", event => {
+        canvas.addEventListener("touchend", event => {
             const posX = event.x - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
@@ -46,7 +46,7 @@ class GamePad {
             } else {
                 if (this.controller.direction == 1) this.controller.direction = 0;
             }
-        });
+        }, false);
 
         document.addEventListener("keydown", event => {
             switch (event.key) {
