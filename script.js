@@ -33,9 +33,7 @@ class GamePad {
             text.textContent = posX.toString();
             if (posX < 0) {
                 this.controller.direction = -1;
-                text2.textContent = "controller: " + this.controller.direction.toString();
             } else {
-                text2.textContent = "controller: " + this.controller.direction.toString();
                 this.controller.direction = 1;
             }
         });
@@ -245,6 +243,8 @@ const animate = (timeStamp) => {
 
         gamePad.draw();        
     }
+    
+    text2.textContent = "controller: " + gamePad.controller.direction.toString();
 
     requestAnimationFrame(animate);
 
