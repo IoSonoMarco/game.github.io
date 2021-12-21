@@ -36,7 +36,7 @@ class GamePad {
             } else {
                 this.controller.direction = 1;
             }
-        }, false);
+        });
 
         canvas.addEventListener("touchend", event => {
             const posX = event.clientX - canvasCenterX
@@ -46,6 +46,17 @@ class GamePad {
             } else {
                 if (this.controller.direction == 1) this.controller.direction = 0;
             }
+        });
+        
+        document.body.addEventListener("touchstart", e => {
+          if (e.target == canvas) {
+            e.preventDefault();
+          }
+        }, false);
+        document.body.addEventListener("touchend", e => {
+          if (e.target == canvas) {
+            e.preventDefault();
+          }
         }, false);
 
         document.addEventListener("keydown", event => {
