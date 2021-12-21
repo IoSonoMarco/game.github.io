@@ -32,10 +32,10 @@ class GamePad {
             const posX = event.x - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
-                text2.textContent = "controller -1";
                 this.controller.direction = -1;
+                text2.textContent = "controller: " + this.controller.direction.toString();
             } else {
-                text2.textContent = "controller 1";
+                text2.textContent = "controller: " + this.controller.direction.toString();
                 this.controller.direction = 1;
             }
         });
@@ -202,7 +202,7 @@ class Grid {
                 line.yIntercept += this.speedY*dt*60;
             }
         }
-        this.speedX = this.maxSpeedX * -this.gamePad.controller.direction;
+        this.speedX = this.maxSpeedX*dt*60 * -this.gamePad.controller.direction;
         if (this.horizontalLinesInfo[0].yIntercept > H) this.tileStep += 1;
     }
 }
