@@ -8,6 +8,9 @@ const c = canvas.getContext("2d");
 const text = document.getElementById("text");
 text.textContent = "coord";
 
+const text2 = document.getElementById("text2");
+text2.textContent = "0";
+
 // CONSTANTS
 const W = canvas.width;
 const H = canvas.height - canvas.height*0.1;
@@ -55,8 +58,10 @@ class GamePad {
             const posX = event.x - canvasCenterX
             text.textContent = posX.toString();
             if (posX < 0) {
+                text2.textContent = "controller -1";
                 controller.direction = -1;
             } else {
+                text2.textContent = "controller 1";
                 controller.direction = 1;
             }
         });
